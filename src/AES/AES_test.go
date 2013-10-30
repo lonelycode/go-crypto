@@ -1,7 +1,6 @@
 package AES
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -28,14 +27,12 @@ func Test_subWord(t *testing.T) {
 	w := word{b: [4]byte{0x32, 0x55, 0xf1, 0x2c}}
 	sw := w.subWord()
 	checkWord("subWord", word{b: [4]byte{0x23, 0xfc, 0xa1, 0x71}}, sw, t)
-	fmt.Println("Test_subWord:\t\t\t\t\tPASS")
 }
 
 func Test_rotWord(t *testing.T) {
 	w := word{b: [4]byte{0xfa, 0xec, 0x59, 0x06}}
 	rw := w.rotWord()
 	checkWord("rotWord", word{b: [4]byte{0xec, 0x59, 0x06, 0xfa}}, rw, t)
-	fmt.Println("Test_rotWord:\t\t\t\t\tPASS")
 }
 
 func Test_xor(t *testing.T) {
@@ -43,7 +40,6 @@ func Test_xor(t *testing.T) {
 	w2 := word{b: [4]byte{0x26, 0x12, 0xd3, 0xf0}}
 	xw := w1.xor(w2)
 	checkWord("xor", word{b: [4]byte{0x3c, 0x76, 0x25, 0x48}}, xw, t)
-	fmt.Println("Test_xor:\t\t\t\t\tPASS")
 }
 
 func Test_keyExpansion_128bit(t *testing.T) {
@@ -140,7 +136,6 @@ func Test_keyExpansion_128bit(t *testing.T) {
 		ekey[42], t)
 	checkWord("keyExpansion", word{b: [4]byte{0xb6, 0x63, 0x0c, 0xa6}}, 
 		ekey[43], t)
-	fmt.Println("Test_keyExpansion_128bit:\t\t\tPASS")
 }
 
 func Test_keyExpansion_196bit(t *testing.T) {
@@ -162,7 +157,6 @@ func Test_keyExpansion_196bit(t *testing.T) {
 		ekey[4], t)
 	checkWord("keyExpansion", word{b: [4]byte{0x52, 0x2c, 0x6b, 0x7b}}, 
 		ekey[5], t)
-	fmt.Println("Test_keyExpansion_196bit:\t\t\tPASS")
 }
 
 func Test_keyExpansion_256bit(t *testing.T) {
@@ -189,7 +183,6 @@ func Test_keyExpansion_256bit(t *testing.T) {
 		ekey[6], t)
 	checkWord("keyExpansion", word{b: [4]byte{0x09, 0x14, 0xdf, 0xf4}}, 
 		ekey[7], t)
-	fmt.Println("Test_keyExpansion_256bit:\t\t\tPASS")
 }
 
 func Test_subBytes(t *testing.T) {
@@ -216,7 +209,6 @@ func Test_subBytes(t *testing.T) {
 	checkWord("subBytes", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0xae, 0xf1, 0xe5, 0x30}}, t)
-	fmt.Println("Test_subBytes:\t\t\t\t\tPASS")
 }
 
 func Test_invSubBytes(t *testing.T) {
@@ -243,7 +235,6 @@ func Test_invSubBytes(t *testing.T) {
 	checkWord("subBytes", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0xbe, 0x2b, 0x2a, 0x08}}, t)
-	fmt.Println("Test_invSubBytes:\t\t\t\tPASS")
 }
 
 func Test_shiftRows(t *testing.T) {
@@ -270,7 +261,6 @@ func Test_shiftRows(t *testing.T) {
 	checkWord("shiftRows", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0x94, 0x28, 0xd7, 0x07}}, t)
-	fmt.Println("Test_shiftRows:\t\t\t\t\tPASS")
 }
 
 func Test_invShiftRows(t *testing.T) {
@@ -297,7 +287,6 @@ func Test_invShiftRows(t *testing.T) {
 	checkWord("shiftRows", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0x28, 0xd7, 0x07, 0x94}}, t)
-	fmt.Println("Test_invShiftRows:\t\t\t\tPASS")
 }
 
 func Test_mixColumns(t *testing.T) {
@@ -324,7 +313,6 @@ func Test_mixColumns(t *testing.T) {
 	checkWord("mixColumns", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0xbf, 0xec, 0xd7, 0x43}}, t)
-	fmt.Println("Test_mixColumns:\t\t\t\tPASS")
 }
 
 func Test_invMixColumnsState(t *testing.T) {
@@ -351,7 +339,6 @@ func Test_invMixColumnsState(t *testing.T) {
 	checkWord("mixColumns", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0x3f, 0xf0, 0xff, 0xd3}}, t)
-	fmt.Println("Test_invMixColumns:\t\t\t\tPASS")
 }
 
 func Test_invMixColumnsWordArray(t *testing.T) {
@@ -387,7 +374,6 @@ func Test_addRoundKey(t *testing.T) {
 	checkWord("addRoundKey", 
 		word{b: [4]byte{s.b[3][0], s.b[3][1], s.b[3][2], s.b[3][3]}},
 		word{b: [4]byte{0xbe, 0x2b, 0x2a, 0x08}}, t)
-	fmt.Println("Test_addRoundKey:\t\t\t\tPASS")
 }
 
 func Test_cipher(t *testing.T) {
@@ -408,8 +394,6 @@ func Test_cipher(t *testing.T) {
 				correct[i], out[i])
 		}
 	}
-
-	fmt.Println("Test_cipher:\t\t\t\t\tPASS")
 }
 
 func Test_invCipher(t *testing.T) {
@@ -430,8 +414,6 @@ func Test_invCipher(t *testing.T) {
 				correct[i], out[i])
 		}
 	}
-
-	fmt.Println("Test_invCipher:\t\t\t\t\tPASS")
 }
 
 func Test_eqInvCipher(t *testing.T) {
@@ -452,8 +434,6 @@ func Test_eqInvCipher(t *testing.T) {
 				correct[i], out[i])
 		}
 	}
-
-	fmt.Println("Test_eqInvCipher:\t\t\t\tPASS")
 }
 
 func Test_Encrypt_Decrypt_CBC(t *testing.T) {
@@ -475,8 +455,6 @@ func Test_Encrypt_Decrypt_CBC(t *testing.T) {
 	} else {
 		t.Error(err.Error())
 	}
-		
-	fmt.Println("Test_Encrypt_Decrypt_CBC:\t\t\tPASS")
 }
 
 func Test_Encrypt_Decrypt_CTR(t *testing.T) {
@@ -498,7 +476,5 @@ func Test_Encrypt_Decrypt_CTR(t *testing.T) {
 	} else {
 		t.Error(err.Error())
 	}
-		
-	fmt.Println("Test_Encrypt_Decrypt_CTR:\t\t\tPASS")
 }
 

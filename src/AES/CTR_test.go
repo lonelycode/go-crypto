@@ -2,7 +2,6 @@ package AES
 
 import (
 	"encoding/binary"
-	"fmt"
 	"testing"
 )
 
@@ -46,8 +45,6 @@ func Test_counterModeMessageOneDecrypt(t *testing.T) {
 	if string(plaintext[:60]) != tgt {
 		t.Error("Test_counterModeMessageOneDecrypt failed!")
 	}
-
-	fmt.Println("Test_counterModeMessageOneDecrypt:\t\tPASS")
 }
 
 func Test_counterModeMessageTwoDecrypt(t *testing.T) {
@@ -71,8 +68,6 @@ func Test_counterModeMessageTwoDecrypt(t *testing.T) {
 	if string(plaintext[:30]) != tgt {
 		t.Error("Test_counterModeMessageTwoDecrypt failed!")
 	}
-
-	fmt.Println("Test_counterModeMessageTwoDecrypt:\t\tPASS")
 }
 
 func Test_counterModeMessageOneEncrypt(t *testing.T) {
@@ -103,8 +98,6 @@ func Test_counterModeMessageOneEncrypt(t *testing.T) {
 	ciphertext, _ := counterMode(plaintext, key, ctr, incCtr)
 
 	checkBytes("counterModeMessageOneEncrypt", ciphertext, correct, t)
-
-	fmt.Println("Test_counterModeMessageOneEncrypt:\t\tPASS")
 }
 
 func Test_counterModeMessageTwoEncrypt(t *testing.T) {
@@ -127,8 +120,6 @@ func Test_counterModeMessageTwoEncrypt(t *testing.T) {
 	ciphertext, _ := counterMode(plaintext, key, ctr, incCtr)
 
 	checkBytes("counterModeMessageTwoEncrypt", ciphertext, correct, t)
-
-	fmt.Println("Test_counterModeMessageTwoEncrypt:\t\tPASS")
 }
 
 func Test_counterMode_BadKey(t *testing.T) {
@@ -149,7 +140,5 @@ func Test_counterMode_BadKey(t *testing.T) {
 	if err.Error() != "key length must equal IV length!" {
 		t.Error("Test_counterMode_BadKey failed!")
 	}
-		
-	fmt.Println("Test_counterMode_BadKey:\t\t\tPASS")
 }
 

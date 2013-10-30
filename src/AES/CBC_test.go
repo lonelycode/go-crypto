@@ -1,7 +1,6 @@
 package AES
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -36,8 +35,6 @@ func Test_cipherBlockChainingMessageOneDecrypt(t *testing.T) {
 	if string(plain[:40]) != tgt {
 		t.Errorf("Test_cipherBlockChainingMessageOneDecrypt failed!")
 	}
-
-	fmt.Println("Test_cipherBlockChainingMessageOneDecrypt:\tPASS")
 }
 
 func Test_cipherBlockChainingMessageTwoDecrypt(t *testing.T) {
@@ -62,8 +59,6 @@ func Test_cipherBlockChainingMessageTwoDecrypt(t *testing.T) {
 	if string(plain[:32]) != tgt {
 		t.Errorf("Test_cipherBlockChainingMessageTwoDecrypt failed!")
 	}
-
-	fmt.Println("Test_cipherBlockChainingMessageTwoDecrypt:\tPASS")
 }
 
 func Test_cipherBlockChainingMessageOneEncrypt(t *testing.T) {
@@ -89,8 +84,6 @@ func Test_cipherBlockChainingMessageOneEncrypt(t *testing.T) {
 	cipher, _ := cipherBlockChainingEncrypt(plain, key, IV)
 
 	checkBytes("cipherBlockChainingMessageOneEncrypt", cipher, correct, t)
-
-	fmt.Println("Test_cipherBlockChainingMessageOneEncrypt:\tPASS")
 }
 
 func Test_cipherBlockChainingMessageTwoEncrypt(t *testing.T) {
@@ -115,7 +108,5 @@ func Test_cipherBlockChainingMessageTwoEncrypt(t *testing.T) {
 	cipher, _ := cipherBlockChainingEncrypt(plain, key, IV)
 
 	checkBytes("cipherBlockChainingMessageTwoEncrypt", cipher, correct, t)
-
-	fmt.Println("Test_cipherBlockChainingMessageTwoEncrypt:\tPASS")
 }
 
