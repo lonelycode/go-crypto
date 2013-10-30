@@ -4,25 +4,8 @@ import (
 	"encoding/binary"
 )
 
-// SHA-1 words are 32-bits
-type word struct {
-	b [4]byte
-}
-
-// SHA-1 hash values are 160-bits (5 32-bit words)
-type value struct {
-	w [5]word
-}
-
-// SHA-1 blocks are 512-bits (16 32-bit words)
-type block struct {
-	w [16]word
-}
-
-func (b *block) GetWord(ndx int) word {
-	return b.w[ndx]
-}
-
+// Pad the message so that its length is a multiple of 512 bits
+// (see FIPS PUB 180-4, 5.1.1)
 func pad(M []byte) []byte {
 	var l uint64 = uint64(len(M))
 
@@ -44,42 +27,99 @@ func pad(M []byte) []byte {
 	return M
 }
 
-func parse(M []byte) []block {
+// Parse the message into N 512-bit blocks
+// (see FIPS PUB 180-4, 5.2.1)
+func parse(M []byte) (int, []block) {
 	N := len(M) / 64
 	blocks := make([]block, N)
-	for i := 0; i < N; i += 16 {
-		blocks[i] = block{
-			[16]word{
-				word{[4]byte{M[i*4+0], M[i*4+1], M[i*4+2], M[i*4+3]}},
-				word{[4]byte{M[i*4+4], M[i*4+5], M[i*4+6], M[i*4+7]}},
-				word{[4]byte{M[i*4+8], M[i*4+9], M[i*4+10], M[i*4+11]}},
-				word{[4]byte{M[i*4+12], M[i*4+13], M[i*4+14], M[i*4+15]}},
-				word{[4]byte{M[i*4+16], M[i*4+17], M[i*4+18], M[i*4+19]}},
-				word{[4]byte{M[i*4+20], M[i*4+21], M[i*4+22], M[i*4+23]}},
-				word{[4]byte{M[i*4+24], M[i*4+25], M[i*4+26], M[i*4+27]}},
-				word{[4]byte{M[i*4+28], M[i*4+29], M[i*4+30], M[i*4+31]}},
-				word{[4]byte{M[i*4+32], M[i*4+33], M[i*4+34], M[i*4+35]}},
-				word{[4]byte{M[i*4+36], M[i*4+37], M[i*4+38], M[i*4+39]}},
-				word{[4]byte{M[i*4+40], M[i*4+41], M[i*4+42], M[i*4+43]}},
-				word{[4]byte{M[i*4+44], M[i*4+45], M[i*4+46], M[i*4+47]}},
-				word{[4]byte{M[i*4+48], M[i*4+49], M[i*4+50], M[i*4+51]}},
-				word{[4]byte{M[i*4+52], M[i*4+53], M[i*4+54], M[i*4+55]}},
-				word{[4]byte{M[i*4+56], M[i*4+57], M[i*4+58], M[i*4+59]}},
-				word{[4]byte{M[i*4+60], M[i*4+61], M[i*4+62], M[i*4+63]}},
+	for i := 0; i < N*16; i += 16 {
+		blocks[i/16] = block{
+			[]word{
+				word{M[i*4 : i*4+4]}, word{M[i*4+4 : i*4+8]},
+				word{M[i*4+8 : i*4+12]}, word{M[i*4+12 : i*4+16]},
+				word{M[i*4+16 : i*4+20]}, word{M[i*4+20 : i*4+24]},
+				word{M[i*4+24 : i*4+28]}, word{M[i*4+28 : i*4+32]},
+				word{M[i*4+32 : i*4+36]}, word{M[i*4+36 : i*4+40]},
+				word{M[i*4+40 : i*4+44]}, word{M[i*4+44 : i*4+48]},
+				word{M[i*4+48 : i*4+52]}, word{M[i*4+52 : i*4+56]},
+				word{M[i*4+56 : i*4+60]}, word{M[i*4+60 : i*4+64]},
 			},
 		}
 	}
 
-	return blocks
+	return N, blocks
 }
 
-// Initial hash value
-var H0 value = value{
-	[5]word{
-		word{[4]byte{0x67, 0x45, 0x23, 0x01}},
-		word{[4]byte{0xef, 0xcd, 0xab, 0x89}},
-		word{[4]byte{0x98, 0xba, 0xdc, 0xfe}},
-		word{[4]byte{0x10, 0x32, 0x54, 0x76}},
-		word{[4]byte{0xc3, 0xd2, 0xe1, 0xf0}},
-	},
+// K constants (see FIPS PUB 180-4, 4.2.1)
+func K(t int) word {
+	if t >= 0 && t <= 19 {
+		return word{[]byte{0x5a, 0x82, 0x79, 0x99}}
+	} else if t >= 20 && t <= 39 {
+		return word{[]byte{0x6e, 0xd9, 0xeb, 0xa1}}
+	} else if t >= 40 && t <= 59 {
+		return word{[]byte{0x8f, 0x1b, 0xbc, 0xdc}}
+	} else if t >= 60 && t <= 79 {
+		return word{[]byte{0xca, 0x62, 0xc1, 0xd6}}
+	}
+	panic("Illegal t!")
+}
+
+// Preprocessing (see FIPS PUB 180-4, 6.1.1)
+func New(M string) Hash {
+	h := Hash{}
+
+	// Hash value (initialized as per FIPS PUB 180-4, 5.3.1)
+	h.digest = value{
+		[]word{
+			word{[]byte{0x67, 0x45, 0x23, 0x01}},
+			word{[]byte{0xef, 0xcd, 0xab, 0x89}},
+			word{[]byte{0x98, 0xba, 0xdc, 0xfe}},
+			word{[]byte{0x10, 0x32, 0x54, 0x76}},
+			word{[]byte{0xc3, 0xd2, 0xe1, 0xf0}},
+		},
+	}
+
+	// Parse and pad the message
+	h.N, h.M = parse(pad([]byte(M)))
+
+	return h
+}
+
+// Compute the hash value (see FIPS PUB 180-4, 6.1.2)
+func (h *Hash) Digest() {
+	for i := 1; i <= h.N; i++ {
+		// Prepare the message schedule, {W_t}}
+		W := make([]word, 80)
+		for t := 0; t <= 15; t++ {
+			W[t] = h.M[i-1].w[t]
+		}
+		for t := 16; t <= 79; t++ {
+			W[t] = rotl(xor(xor(W[t-3], W[t-8]), xor(W[t-14], W[t-16])), 1)
+		}
+
+		// Initialize the five working variables, a, b, c, d, and e, with the
+		// (i-1)st hash value
+		a := h.digest.w[0]
+		b := h.digest.w[1]
+		c := h.digest.w[2]
+		d := h.digest.w[3]
+		e := h.digest.w[4]
+
+		// Do some rotations
+		for t := 0; t <= 79; t++ {
+			T := add(add(add(rotl(a, 5), f(b, c, d, t)), add(e, K(t))), W[t])
+			e = d
+			d = c
+			c = rotl(b, 30)
+			b = a
+			a = T
+		}
+
+		// Compute the ith intermediate hash value H_i
+		h.digest.w[0] = add(a, h.digest.w[0])
+		h.digest.w[1] = add(b, h.digest.w[1])
+		h.digest.w[2] = add(c, h.digest.w[2])
+		h.digest.w[3] = add(d, h.digest.w[3])
+		h.digest.w[4] = add(e, h.digest.w[4])
+	}
 }
