@@ -38,3 +38,8 @@ type Hash struct {
 	N      int
 	digest value
 }
+
+func (h *Hash) Digest() []byte {
+        return h.digest.Bytes()
+}
+

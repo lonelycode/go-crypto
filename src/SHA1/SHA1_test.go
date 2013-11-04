@@ -103,10 +103,10 @@ func Test_pad_2_blocks(t *testing.T) {
 
 func Test_Digest_1_block(t *testing.T) {
 	h := New("abc")
-	h.Digest()
+	h.Sum()
 
 	correct := "A9993E364706816ABA3E25717850C26C9CD0D89D"
-	result := strings.ToUpper(hex.EncodeToString(h.digest.Bytes()))
+	result := strings.ToUpper(hex.EncodeToString(h.Digest()))
 	if result != correct {
 		t.Error("Test_Digest_1_block failed:  incorrect hash value!")
 	}
@@ -114,10 +114,10 @@ func Test_Digest_1_block(t *testing.T) {
 
 func Test_Digest_2_blocks(t *testing.T) {
 	h := New("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq")
-	h.Digest()
+	h.Sum()
 
 	correct := "84983E441C3BD26EBAAE4AA1F95129E5E54670F1"
-	result := strings.ToUpper(hex.EncodeToString(h.digest.Bytes()))
+	result := strings.ToUpper(hex.EncodeToString(h.Digest()))
 	if result != correct {
 		t.Error("Test_Digest_2_blocks failed:  incorrect hash value!")
 	}

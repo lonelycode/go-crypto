@@ -50,8 +50,8 @@ func parse(M []byte) (int, []block) {
 	return N, blocks
 }
 
-// K constants (see FIPS PUB 180-4, 4.2.1)
-func K(t int) word {
+// k constants (see FIPS PUB 180-4, 4.2.1)
+func k(t int) word {
 	if t >= 0 && t <= 19 {
 		return word{[]byte{0x5a, 0x82, 0x79, 0x99}}
 	} else if t >= 20 && t <= 39 {
@@ -86,7 +86,7 @@ func New(M string) Hash {
 }
 
 // Compute the hash value (see FIPS PUB 180-4, 6.1.2)
-func (h *Hash) Digest() {
+func (h *Hash) Sum() {
 	for i := 1; i <= h.N; i++ {
 		// Prepare the message schedule, {W_t}}
 		W := make([]word, 80)
@@ -107,7 +107,7 @@ func (h *Hash) Digest() {
 
 		// Do some rotations
 		for t := 0; t <= 79; t++ {
-			T := add(add(add(rotl(a, 5), f(b, c, d, t)), add(e, K(t))), W[t])
+			T := add(add(add(rotl(a, 5), f(b, c, d, t)), add(e, k(t))), W[t])
 			e = d
 			d = c
 			c = rotl(b, 30)
