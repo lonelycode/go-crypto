@@ -78,3 +78,19 @@ func Test_Encrypt_Million(t *testing.T) {
 
 	checkBlock("Test_Encrypt_Single", ciphertext, correct, t)
 }
+
+func Test_Decrypt(t *testing.T) {
+	plaintext := block{[4]Zi{
+		Zi{[4]ZiJie{0x01, 0x23, 0x45, 0x67}},
+		Zi{[4]ZiJie{0x89, 0xab, 0xcd, 0xef}},
+		Zi{[4]ZiJie{0xfe, 0xdc, 0xba, 0x98}},
+		Zi{[4]ZiJie{0x76, 0x54, 0x32, 0x10}}}}
+	MK := block{[4]Zi{
+		Zi{[4]ZiJie{0x01, 0x23, 0x45, 0x67}},
+		Zi{[4]ZiJie{0x89, 0xab, 0xcd, 0xef}},
+		Zi{[4]ZiJie{0xfe, 0xdc, 0xba, 0x98}},
+		Zi{[4]ZiJie{0x76, 0x54, 0x32, 0x10}}}}
+
+	result := Decrypt(Encrypt(plaintext, MK), MK)
+	checkBlock("Test_Decrypt", result, plaintext, t)
+}
