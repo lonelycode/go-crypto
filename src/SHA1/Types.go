@@ -12,11 +12,13 @@ type value struct {
 
 func (v *value) Bytes() []byte {
 	var b []byte
+
 	b = append(b, v.Word(0).b...)
 	b = append(b, v.Word(1).b...)
 	b = append(b, v.Word(2).b...)
 	b = append(b, v.Word(3).b...)
 	b = append(b, v.Word(4).b...)
+
 	return b
 }
 
@@ -40,6 +42,5 @@ type Hash struct {
 }
 
 func (h *Hash) Digest() []byte {
-        return h.digest.Bytes()
+	return h.digest.Bytes()
 }
-
