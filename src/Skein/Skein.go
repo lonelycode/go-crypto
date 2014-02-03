@@ -68,19 +68,19 @@ func (s *Skein) SimpleHash(M []byte) []byte {
     Kprime := ToBytes(big.NewInt(0), s.Nb)
 
     Ts := new(big.Int).Mul(
-        big.NewInt(T_cfg),
-        new(big.Int).Exp(
-            big.NewInt(2),
-            big.NewInt(120),
-            nil))
+                big.NewInt(T_cfg),
+                new(big.Int).Exp(
+                    big.NewInt(2),
+                    big.NewInt(120),
+                    nil))
     G0 := UBI(Kprime, s.C, Ts)
 
     Ts = new(big.Int).Mul(
-        big.NewInt(T_msg),
-        new(big.Int).Exp(
-            big.NewInt(2),
-            big.NewInt(120),
-            nil))
+                big.NewInt(T_msg),
+                new(big.Int).Exp(
+                    big.NewInt(2),
+                    big.NewInt(120),
+                    nil))
     G1 := UBI(G0, M, Ts)
 
     H := Output(G1, s.No)
