@@ -96,7 +96,6 @@ func (z1 Zi) xor(z2 Zi) Zi {
 // Circular shift left
 func (z Zi) rotl(shift uint16) Zi {
     var value uint32
-    var result Zi
 
     b := []byte{byte(z.b[0]), byte(z.b[1]), byte(z.b[2]), byte(z.b[3])}
     buf := bytes.NewReader(b)
@@ -114,12 +113,10 @@ func (z Zi) rotl(shift uint16) Zi {
         return z
     }
 
-    result = Zi{[4]ZiJie{ZiJie(buf2.Bytes()[0]),
-                         ZiJie(buf2.Bytes()[1]),
-                         ZiJie(buf2.Bytes()[2]),
-                         ZiJie(buf2.Bytes()[3])}}
-
-    return result
+    return Zi{[4]ZiJie{ZiJie(buf2.Bytes()[0]),
+                       ZiJie(buf2.Bytes()[1]),
+                       ZiJie(buf2.Bytes()[2]),
+                       ZiJie(buf2.Bytes()[3])}}
 }
 
 // Non-linear substitution
@@ -197,9 +194,7 @@ func Encrypt(X, MK block) block {
         XX[i+4] = F(block{[4]Zi{XX[i], XX[i+1], XX[i+2], XX[i+3]}}, rk[i])
     }
 
-    Y := R(block{[4]Zi{XX[32], XX[33], XX[34], XX[35]}})
-
-    return Y
+    return R(block{[4]Zi{XX[32], XX[33], XX[34], XX[35]}})
 }
 
 // Decryption
@@ -216,8 +211,6 @@ func Decrypt(X, MK block) block {
         XX[i+4] = F(block{[4]Zi{XX[i], XX[i+1], XX[i+2], XX[i+3]}}, rk[31-i])
     }
 
-    Y := R(block{[4]Zi{XX[32], XX[33], XX[34], XX[35]}})
-
-    return Y
+    return R(block{[4]Zi{XX[32], XX[33], XX[34], XX[35]}})
 }
 

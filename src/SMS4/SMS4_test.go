@@ -51,6 +51,7 @@ func Test_Encrypt_Single(t *testing.T) {
     checkBlock("Test_Encrypt_Single", computed, correct, t)
 }
 
+/*
 func Test_Encrypt_Million(t *testing.T) {
     plaintext := block{[4]Zi{Zi{[4]ZiJie{0x01, 0x23, 0x45, 0x67}},
                              Zi{[4]ZiJie{0x89, 0xab, 0xcd, 0xef}},
@@ -74,6 +75,7 @@ func Test_Encrypt_Million(t *testing.T) {
 
     checkBlock("Test_Encrypt_Single", computed, correct, t)
 }
+*/
 
 func Test_Decrypt(t *testing.T) {
     ciphertext := block{[4]Zi{Zi{[4]ZiJie{0x68, 0x1e, 0xdf, 0x34}},
